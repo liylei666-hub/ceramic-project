@@ -1,0 +1,21 @@
+{
+  "source_path": "C:\\Users\\liylei\\Documents\\陶瓷项目\\57BIT_RETAINED_STATE.md",
+  "type": "ADR",
+  "confidence": "high",
+  "manifest_override": true,
+  "title": "57-bit Retained State",
+  "summary": "Defines authoritative retained 57-bit ceramic watermark checkpoints, decoding policy, protocol, experiment constraints, evidence, rollback assets, and deployment operations.",
+  "scope": [
+    "TrustMark-Q 57-bit checkpoint",
+    "decoder service",
+    "decoding fallback policy",
+    "Mini Program tunnel",
+    "57-bit payload protocol",
+    "ceramic experiment contract",
+    "rollback artifacts"
+  ],
+  "cross_refs": [],
+  "locked": false,
+  "precedence": 0,
+  "notes": ""
+}
