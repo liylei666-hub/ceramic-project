@@ -1,0 +1,40 @@
+[Unit]
+Description=Ceramic logo watermark decoder API
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ceramic-api
+Group=ceramic-api
+WorkingDirectory=/opt/ceramic-watermark
+EnvironmentFile=/etc/ceramic-watermark/decoder.env
+LoadCredential=ceramic_api_token:/etc/ceramic-watermark/decoder.token
+ExecStart=/opt/ceramic-watermark/venv/bin/python -m uvicorn services.decoder_api.app:app --host 127.0.0.1 --port 8765 --workers 1 --proxy-headers --forwarded-allow-ips 127.0.0.1
+Restart=on-failure
+RestartSec=5
+TimeoutStartSec=180
+TimeoutStopSec=30
+UMask=0027
+
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+ProtectClock=true
+ProtectHostname=true
+RestrictNamespaces=true
+RestrictRealtime=true
+RestrictSUIDSGID=true
+LockPersonality=true
+CapabilityBoundingSet=
+AmbientCapabilities=
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+SystemCallArchitectures=native
+
+[Install]
+WantedBy=multi-user.target

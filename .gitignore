@@ -1,0 +1,25 @@
+# Local runtime and generated experiment artifacts
+/tmp/
+/comparison_exports/
+/outputs/
+/pilot_smoke_local/
+/target_single_logo_smoke/
+/.compare_tmp/
+/.remote_sync/
+/.codex_remote_stage_natural_wm/
+
+# Historical standalone training/evaluation sources retained locally only
+/*.py
+/*.sh
+/configs/
+/gsd-ingest-manifest.yaml
+
+# Models, archives, caches, logs, and local environment files
+*.pt
+*.pth
+*.tar
+*.log
+*.env
+__pycache__/
+*.py[cod]
+

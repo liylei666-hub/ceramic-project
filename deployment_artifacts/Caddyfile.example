@@ -1,0 +1,25 @@
+decode.example.com {
+    encode zstd gzip
+
+    request_body {
+        max_size 50MB
+    }
+
+    handle /decode {
+        reverse_proxy 127.0.0.1:8765
+    }
+
+    handle /healthz {
+        reverse_proxy 127.0.0.1:8765
+    }
+
+    handle {
+        respond "Not Found" 404
+    }
+
+    header {
+        Strict-Transport-Security "max-age=31536000"
+        X-Content-Type-Options "nosniff"
+        -Server
+    }
+}

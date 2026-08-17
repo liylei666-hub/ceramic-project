@@ -1,0 +1,34 @@
+[Unit]
+Description=Temporary HTTPS tunnel for ceramic decoder demo
+After=network-online.target ceramic-decoder.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+DynamicUser=true
+StateDirectory=ceramic-cloudflared
+Environment=HOME=/var/lib/ceramic-cloudflared
+ExecStart=/usr/local/bin/cloudflared tunnel --no-autoupdate --url http://127.0.0.1:8765
+Restart=on-failure
+RestartSec=5
+
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectControlGroups=true
+RestrictNamespaces=true
+RestrictRealtime=true
+RestrictSUIDSGID=true
+LockPersonality=true
+CapabilityBoundingSet=
+AmbientCapabilities=
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+SystemCallArchitectures=native
+
+[Install]
+WantedBy=multi-user.target

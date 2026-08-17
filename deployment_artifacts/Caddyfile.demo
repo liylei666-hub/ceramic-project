@@ -1,0 +1,8 @@
+8-138-42-34.sslip.io {
+    encode zstd gzip
+    reverse_proxy 127.0.0.1:8765
+
+    header {
+        -Server
+    }
+}
