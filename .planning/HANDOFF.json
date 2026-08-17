@@ -1,0 +1,102 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-08-17T01:16:00.352Z",
+  "phase": "1",
+  "phase_name": "Preserve the Accepted Operational Baseline",
+  "phase_dir": ".planning",
+  "plan": 0,
+  "task": 0,
+  "total_tasks": 0,
+  "status": "paused",
+  "completed_tasks": [
+    {
+      "id": 1,
+      "name": "Verify payload generalization and repair replay provenance",
+      "status": "done",
+      "progress": "Correct 57-bit historical and fresh unseen payloads passed 80/80; obsolete 40-bit replay images were deleted and fail-closed 57-bit replay validation was added."
+    },
+    {
+      "id": 2,
+      "name": "Test locator5-aligned reduced geometry T",
+      "status": "done",
+      "progress": "Six step113100-derived candidates were trained on GPU6 and all were rejected for retained rotation or perspective-rotation regressions."
+    },
+    {
+      "id": 3,
+      "name": "Restore temporary Mini Program tunnel after PC reboot",
+      "status": "done",
+      "progress": "Verified a new Cloudflare-to-PC-to-SSH-to-249 GPU7 path against the exact step113100 locator5 health contract."
+    },
+    {
+      "id": 4,
+      "name": "Clarify camera framing guidance",
+      "status": "done",
+      "progress": "Capture and system-camera hints now say the logo need not fill the frame and should remain complete, clear, and stable."
+    }
+  ],
+  "remaining_tasks": [
+    {
+      "id": 5,
+      "name": "Plan and run independent new printed/fired ceramic blind validation",
+      "status": "not_started"
+    },
+    {
+      "id": 6,
+      "name": "Replace temporary relay with compliant stable HTTPS after explicit authorization",
+      "status": "not_started"
+    }
+  ],
+  "blockers": [
+    {
+      "description": "No independent newly printed and fired blind set is available for another weight-selection cycle.",
+      "type": "human_action",
+      "workaround": "Retain step113100 and report only the existing verified gates."
+    },
+    {
+      "description": "Temporary access depends on the operator PC remaining powered on and online.",
+      "type": "external",
+      "workaround": "Restart and verify the canonical tunnel script after any PC shutdown."
+    },
+    {
+      "description": "No compliant stable production domain/HTTPS origin is configured.",
+      "type": "external",
+      "workaround": "Continue using the temporary tunnel only for authorized testing."
+    }
+  ],
+  "human_actions_pending": [
+    {
+      "action": "Keep the operator PC awake while the current temporary decoder URL is in use.",
+      "context": "The Cloudflare Quick Tunnel and SSH forward both run on this PC.",
+      "blocking": true
+    },
+    {
+      "action": "Provide genuinely new printed/fired ceramic samples before another model-selection claim.",
+      "context": "Existing real photos and blind_test10 have already been consumed or must remain sealed according to their documented roles.",
+      "blocking": true
+    }
+  ],
+  "decisions": [
+    {
+      "decision": "Keep step113100 as the only operational checkpoint.",
+      "rationale": "Every corrected-replay or reduced-geometry-T candidate regressed at least one retained mandatory case.",
+      "phase": "1"
+    },
+    {
+      "decision": "Do not reuse blind_test10 for training, tuning, or candidate selection.",
+      "rationale": "It was designated as an untouched blind set and already used once for the completed round5 comparison.",
+      "phase": "2"
+    },
+    {
+      "decision": "Treat localization as a way to narrow geometry T, not to remove physical degradation T.",
+      "rationale": "Reduced geometry T alone produced no strictly stronger checkpoint; blur, lighting, reflection, contrast, noise, and compression remain important.",
+      "phase": "1"
+    }
+  ],
+  "uncommitted_files": [
+    "comparison_exports/locator5_geometry_t_adapt_20260817/README.md",
+    "tmp/finetune_locator5_geometry_t.py",
+    "C:/Users/liylei/Documents/陶瓷水印/apps/wechat-miniapp/pages/capture/index.wxml"
+  ],
+  "next_action": "Read NEW_CHAT_HANDOFF.md, 57BIT_RETAINED_STATE.md, deployment_artifacts/README.md, and .planning/.continue-here.md in full; acknowledge the blocking constraints; then follow the user's new request without training or replacing weights unless newly authorized.",
+  "context_notes": "There is no active phase plan. The project is paused with GPU7 production healthy on exact step113100 locator5 and no training running. The current Quick Tunnel is ephemeral and must be revalidated after a PC or network restart."
+}
