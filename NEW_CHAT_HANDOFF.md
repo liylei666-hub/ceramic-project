@@ -1,19 +1,19 @@
 # Ceramic watermark project handoff
 
-Updated: 2026-08-16 CST
+Updated: 2026-08-17 CST
 
-## Current operational override (authoritative, 2026-08-16)
+## Current operational override (authoritative, 2026-08-17)
 
-- The Mini Program decoder runs on server 249 GPU7 at `127.0.0.1:28765` from
-  `/data0/liyanlei/ceramic_watermark/services/decoder_gpu7_real18_locator5_rotation_20260816`.
+- The Mini Program decoder runs on server 249 GPU5 at `127.0.0.1:28765` from
+  `/data0/liyanlei/ceramic_watermark/services/decoder_gpu5_real18_locator5_rotation_20260817`.
 - Step 113100 is the current best and only checkpoint considered for operation.
   Checkpoint SHA-256:
   `834d33d4666921f1ae6416d5c3a9d08a7ac60dc9dc21f4ce907caa5923e1d6ef`.
   Step 112500/900K is historical only and is no longer a candidate or rollback.
 - Active 249 API SHA-256:
   `3392cdf4175c3c43cc41b3f587d9c235acc838a91277aa44a933ad016aabb55b`.
-- Canonical local source and GPU7 operational scripts are archived in
-  `deployment_artifacts/locator5_rotation/`.
+- Canonical local source and GPU5 operational scripts are archived in
+  `deployment_artifacts/locator5_rotation_gpu5/`.
 - Stage one is unchanged: locate the complete outer contour and try three
   detector-relative crops (`0.84 colour`, `0.88 grayscale`, `0.92 colour`).
   Successful requests stop after three attempts.
@@ -23,22 +23,23 @@ Updated: 2026-08-16 CST
   candidates at `90/180/270` degrees (36 rotation candidates). Both fallback
   stages require at least two BCH-5- and CRC-4-valid candidates to agree.
   Maximum attempts are 51.
-- GPU6 preflight and GPU7 production both passed physical crops 18/18,
+- GPU5 shadow and production both passed physical crops 18/18,
   synthetic perspective cases 54/54 (26 perspective recoveries), arbitrary
   rotation cases 180/180 (132 rotation recoveries), combined perspective plus
   rotation cases 36/36 (all 36 rotation recoveries), two board photos 2/2,
   and both negative controls. No wrong valid identifier occurred.
-- Warm direct cases remain about 35-45 ms. A full 51-attempt negative completed
-  in about 121 ms. A blank image returns undetected with zero attempts.
-- Immediate rollback is the previous step-113100 locator4 service at
-  `/data0/liyanlei/ceramic_watermark/services/decoder_gpu7_real18_locator4_perspective_20260816`;
-  it uses the same checkpoint, not 900K.
+- Warm direct cases remain about 35-48 ms. A full 51-attempt negative completed
+  in about 119 ms. A blank image returns undetected with zero attempts.
+- Immediate rollback is the previous GPU7 locator5 service at
+  `/data0/liyanlei/ceramic_watermark/services/decoder_gpu7_real18_locator5_rotation_20260816`;
+  it uses the same checkpoint and API. Locator4 on GPU7 remains the secondary
+  rollback; neither rollback uses 900K.
 - The ECS retains step 113100 with the older 64-candidate API as a separate
   historical deployment, but it is not the current Mini Program route.
-- Canonical 249 GPU7 temporary tunnel script SHA-256:
-  `85051e1fb0e6564e63dd38cd39f5be10172d28fc75ac82c2175f520c9e599848`.
+- Canonical 249 GPU5 temporary tunnel script SHA-256:
+  `24a998c3314b1d1ec543d89f66c443aabe6f281ab3940b09fbbc74d3a1948b9b`.
 - Temporary access uses
-  `Mini Program -> Cloudflare -> local PC -> SSH -> 249 GPU7 decoder`.
+  `Mini Program -> Cloudflare -> local PC -> SSH -> 249 GPU5 decoder`.
 - A 2026-08-16 independent GPU6 evaluation of six failed user samples did not
   alter the operational checkpoint or service. Two low-resolution adaptation
   branches were rejected because neither recovered failures 01-03 and the

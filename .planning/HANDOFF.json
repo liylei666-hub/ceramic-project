@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "timestamp": "2026-08-17T01:35:21.285Z",
+  "timestamp": "2026-08-17T01:47:49.934Z",
   "phase": "1",
   "phase_name": "Preserve the Accepted Operational Baseline",
   "phase_dir": ".planning",
@@ -25,7 +25,7 @@
       "id": 3,
       "name": "Restore temporary Mini Program tunnel after PC reboot",
       "status": "done",
-      "progress": "Verified a new Cloudflare-to-PC-to-SSH-to-249 GPU7 path against the exact step113100 locator5 health contract."
+      "progress": "Verified the Cloudflare-to-PC-to-SSH-to-249 path against the exact step113100 locator5 health contract; production now runs on GPU5."
     },
     {
       "id": 4,
@@ -102,5 +102,5 @@
     "C:/Users/liylei/Documents/陶瓷水印/apps/wechat-miniapp/pages/capture/index.wxml"
   ],
   "next_action": "Read NEW_CHAT_HANDOFF.md, 57BIT_RETAINED_STATE.md, deployment_artifacts/README.md, and .planning/.continue-here.md in full; acknowledge the blocking constraints; then follow the user's new request without training or replacing weights unless newly authorized.",
-  "context_notes": "There is no active phase plan. The project is paused with GPU7 production healthy on exact step113100 locator5 and no training running. The operational workspace is clean after commit c801974; local bulky artifacts are ignored, and 4.16 GB of obsolete data is recoverable from the Windows Recycle Bin. The current Quick Tunnel is ephemeral and must be revalidated after a PC or network restart."
+  "context_notes": "There is no active phase plan. Production is healthy on server 249 GPU5 with the exact step113100 locator5 checkpoint/API and no training running; GPU7 is idle and is the immediate same-model rollback. The operational workspace is clean after commit c801974; local bulky artifacts are ignored, and 4.16 GB of obsolete data is recoverable from the Windows Recycle Bin. The current Quick Tunnel is ephemeral and must be revalidated after a PC or network restart."
 }

@@ -1,10 +1,10 @@
 # Ceramic watermark decoder deployment
 
-## Current deployment override (authoritative, 2026-08-16)
+## Current deployment override (authoritative, 2026-08-17)
 
-- The active Mini Program decoder runs on server 249 GPU7 at
+- The active Mini Program decoder runs on server 249 GPU5 at
   `127.0.0.1:28765` from
-  `/data0/liyanlei/ceramic_watermark/services/decoder_gpu7_real18_locator5_rotation_20260816`.
+  `/data0/liyanlei/ceramic_watermark/services/decoder_gpu5_real18_locator5_rotation_20260817`.
 - Active model: 57-bit real-ceramic decoder adaptation
 - Checkpoint step: 113100
 - Checkpoint SHA-256:
@@ -14,7 +14,7 @@
 - Active 249 API SHA-256:
   `3392cdf4175c3c43cc41b3f587d9c235acc838a91277aa44a933ad016aabb55b`
 - Canonical local source and operational scripts are archived under
-  `deployment_artifacts/locator5_rotation/`; its `decoder_api/app.py` is an
+  `deployment_artifacts/locator5_rotation_gpu5/`; its `decoder_api/app.py` is an
   exact copy of the active 249 API.
 - Active policy: first run the unchanged three outer-contour-relative variants.
   If all fail, locate the central white square, estimate a four-corner
@@ -22,7 +22,7 @@
   the same candidates at `90/180/270` degrees (36 rotation candidates).
   Both fallback stages require agreement from at least two BCH-5- and
   CRC-4-valid candidates. The maximum is 51 attempts.
-- GPU6 preflight and GPU7 production verification both passed physical crops
+- GPU5 shadow and production verification both passed physical crops
   18/18, perspective cases 54/54, arbitrary rotation cases 180/180, combined
   perspective-rotation cases 36/36, two board photos 2/2, an unwatermarked
   negative, and a blank-image negative.
@@ -36,14 +36,15 @@
   retraining and interpolation candidates were fully gated; none strictly
   exceeded step 113100, so no checkpoint or service change was deployed. See
   `comparison_exports/correct57_replay_retrain_20260816/README.md`.
-- Direct cases remain three attempts at about 35-45 ms after warm-up. A full
-  51-attempt negative completed in about 121 ms.
-- Immediate rollback is locator4 under
-  `/data0/liyanlei/ceramic_watermark/services/decoder_gpu7_real18_locator4_perspective_20260816`.
+- Direct cases remain three attempts at about 35-48 ms after warm-up. A full
+  51-attempt negative completed in about 119 ms.
+- Immediate rollback is GPU7 locator5 under
+  `/data0/liyanlei/ceramic_watermark/services/decoder_gpu7_real18_locator5_rotation_20260816`;
+  GPU7 locator4 remains the secondary rollback.
 - Temporary access remains
-  `Mini Program -> Cloudflare -> local PC -> SSH -> 249 GPU7 decoder`.
-- Canonical 249 GPU7 tunnel script SHA-256:
-  `85051e1fb0e6564e63dd38cd39f5be10172d28fc75ac82c2175f520c9e599848`.
+  `Mini Program -> Cloudflare -> local PC -> SSH -> 249 GPU5 decoder`.
+- Canonical 249 GPU5 tunnel script SHA-256:
+  `24a998c3314b1d1ec543d89f66c443aabe6f281ab3940b09fbbc74d3a1948b9b`.
 
 The older sections below document the parent deployment and prior fallback
 history; this override is authoritative where they differ.
@@ -172,12 +173,12 @@ the selected localization padding/mode, and the actual `attempts` count.
 The standard operation is run from the project root on the operator PC:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\deployment_artifacts\start-local-249-gpu7-decoder-tunnel.ps1
+powershell -ExecutionPolicy Bypass -File .\deployment_artifacts\start-local-249-gpu5-decoder-tunnel.ps1
 ```
 
 The script performs all of the following before returning an address:
 
-1. creates or reuses the local SSH forward to the 249 GPU7 loopback decoder;
+1. creates or reuses the local SSH forward to the 249 GPU5 loopback decoder;
 2. creates or reuses the local Cloudflare Quick Tunnel;
 3. verifies `/healthz` reports step 113100, the exact checkpoint SHA-256, and
    the `3/12/36` locator5 perspective-plus-rotation policy;
@@ -193,7 +194,7 @@ locator5 model, checkpoint, and localization policy match.
 To deliberately replace the current temporary hostname, run:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\deployment_artifacts\start-local-249-gpu7-decoder-tunnel.ps1 -ForceNewTunnel
+powershell -ExecutionPolicy Bypass -File .\deployment_artifacts\start-local-249-gpu5-decoder-tunnel.ps1 -ForceNewTunnel
 ```
 
 Copy the returned `decode_url` into the cloud function's `DECODER_URL`. The

@@ -1,8 +1,8 @@
 # 57-bit Retained State
 
-Updated: 2026-08-16 CST
+Updated: 2026-08-17 CST
 
-## Current deployed checkpoint override (authoritative, 2026-08-16)
+## Current deployed checkpoint override (authoritative, 2026-08-17)
 
 - Model: TrustMark-Q 57-bit 900K parent plus decoder-only real-ceramic adaptation
 - Step: 113100 (parent step 112500 + 600 local adaptation steps)
@@ -25,15 +25,16 @@ Updated: 2026-08-16 CST
   controls = 2/2; negative controls = 2/2. Evidence and rollback:
   `/opt/ceramic-watermark/deployments/real18_candidate_20260815-150105`.
 - No training is currently running. Historical artifacts remain unchanged.
-- Server 249 GPU7 production port `127.0.0.1:28765` runs from
-  `/data0/liyanlei/ceramic_watermark/services/decoder_gpu7_real18_locator5_rotation_20260816`.
-  The immediate rollback is locator4 with the same step-113100 checkpoint.
-- GPU6 preflight and GPU7 production passed physical crops 18/18, perspective
+- Server 249 GPU5 production port `127.0.0.1:28765` runs from
+  `/data0/liyanlei/ceramic_watermark/services/decoder_gpu5_real18_locator5_rotation_20260817`.
+  The immediate rollback is GPU7 locator5 with the same step-113100 checkpoint
+  and API; GPU7 locator4 is the secondary rollback.
+- GPU5 shadow and production passed physical crops 18/18, perspective
   cases 54/54, rotation cases 180/180, combined perspective-rotation cases
   36/36, board photos 2/2, and two negative controls. Direct cases remain
   three attempts; a full 51-attempt negative completed in about 121 ms.
-- Canonical 249 GPU7 tunnel script SHA-256:
-  `85051e1fb0e6564e63dd38cd39f5be10172d28fc75ac82c2175f520c9e599848`.
+- Canonical 249 GPU5 tunnel script SHA-256:
+  `24a998c3314b1d1ec543d89f66c443aabe6f281ab3940b09fbbc74d3a1948b9b`.
 - The 2026-08-16 failure-sample work remains offline on GPU6. Both decoder
   fine-tuning candidates were rejected and must not replace step 113100. A
   six-candidate issued-ID catalog fallback passed the six supplied inputs and
@@ -113,14 +114,14 @@ Updated: 2026-08-16 CST
 ## Temporary Mini Program tunnel operation
 
 - Default topology: Mini Program -> Cloudflare -> operator PC -> SSH local
-  forward -> server 249 GPU7 loopback decoder.
+  forward -> server 249 GPU5 loopback decoder.
 - Canonical command:
-  `powershell -ExecutionPolicy Bypass -File .\deployment_artifacts\start-local-249-gpu7-decoder-tunnel.ps1`
+  `powershell -ExecutionPolicy Bypass -File .\deployment_artifacts\start-local-249-gpu5-decoder-tunnel.ps1`
 - Use `-ForceNewTunnel` only when a new temporary hostname is requested or the
   current hostname is invalid.
 - The script handles the short Cloudflare authoritative-DNS/local-NXDOMAIN
   propagation gap using `curl --resolve`; its current SHA-256 is
-  `85051e1fb0e6564e63dd38cd39f5be10172d28fc75ac82c2175f520c9e599848`.
+  `24a998c3314b1d1ec543d89f66c443aabe6f281ab3940b09fbbc74d3a1948b9b`.
 - The script must verify the step-113100 checkpoint SHA-256, locator5 model,
   outer-contour direct stage, inner-square perspective fallback, rotation
   fallback, and exact `3/12/36` candidate counts before returning an address.
