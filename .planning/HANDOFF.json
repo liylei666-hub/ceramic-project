@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "timestamp": "2026-08-17T01:47:49.934Z",
+  "timestamp": "2026-08-17T03:59:42.297Z",
   "phase": "1",
   "phase_name": "Preserve the Accepted Operational Baseline",
   "phase_dir": ".planning",
@@ -38,6 +38,12 @@
       "name": "Clean and version the operational workspace",
       "status": "done",
       "progress": "Moved 4.16 GB of obsolete checkpoints, rejected experiment artifacts, caches, and staging copies to the Windows Recycle Bin; retained the exact step113100 local checkpoint, current/rollback deployment source, critical reports, and tunnel runtime."
+    },
+    {
+      "id": 8,
+      "name": "Generate a new company K3/K5 print batch",
+      "status": "done",
+      "progress": "Generated 20 new identifiers with paired K3/K5 images (40 PNGs), verified zero overlap with both prior 20-identifier sets, passed step113100 locator5 40/40 with zero wrong valid identifiers, and delivered a checked folder plus ZIP to the Desktop."
     }
   ],
   "remaining_tasks": [
@@ -54,14 +60,14 @@
   ],
   "blockers": [
     {
-      "description": "No independent newly printed and fired blind set is available for another weight-selection cycle.",
+      "description": "No physical print/fire/phone results exist yet for the new company K3/K5 batch.",
       "type": "human_action",
-      "workaround": "Retain step113100 and report only the existing verified gates."
+      "workaround": "Retain step113100 and treat the completed 40/40 result as digital-image verification only."
     },
     {
       "description": "Temporary access depends on the operator PC remaining powered on and online.",
       "type": "external",
-      "workaround": "Restart and verify the canonical tunnel script after any PC shutdown."
+      "workaround": "Restart and verify the canonical tunnel script after any PC shutdown or network change."
     },
     {
       "description": "No compliant stable production domain/HTTPS origin is configured.",
@@ -76,8 +82,8 @@
       "blocking": true
     },
     {
-      "action": "Provide genuinely new printed/fired ceramic samples before another model-selection claim.",
-      "context": "Existing real photos and blind_test10 have already been consumed or must remain sealed according to their documented roles.",
+      "action": "Print/fire and photograph the new K3/K5 company batch before drawing physical-robustness conclusions.",
+      "context": "All 40 files passed digital locator5 decoding, but physical production remains a separate validation layer.",
       "blocking": true
     }
   ],
@@ -93,14 +99,17 @@
       "phase": "2"
     },
     {
-      "decision": "Treat localization as a way to narrow geometry T, not to remove physical degradation T.",
-      "rationale": "Reduced geometry T alone produced no strictly stronger checkpoint; blur, lighting, reflection, contrast, noise, and compression remain important.",
+      "decision": "Interpret the company request as 20 paired identifiers with K3 and K5 versions, for 40 PNGs total.",
+      "rationale": "This preserves a paired strength comparison while providing exactly 20 new watermark identities.",
+      "phase": "1"
+    },
+    {
+      "decision": "Use the frozen encoder and GPU4 only for artifact generation and verification.",
+      "rationale": "GPU5 remains the production decoder and no training or weight replacement was authorized.",
       "phase": "1"
     }
   ],
-  "uncommitted_files": [
-    "C:/Users/liylei/Documents/陶瓷水印/apps/wechat-miniapp/pages/capture/index.wxml"
-  ],
-  "next_action": "Read NEW_CHAT_HANDOFF.md, 57BIT_RETAINED_STATE.md, deployment_artifacts/README.md, and .planning/.continue-here.md in full; acknowledge the blocking constraints; then follow the user's new request without training or replacing weights unless newly authorized.",
-  "context_notes": "There is no active phase plan. Production is healthy on server 249 GPU5 with the exact step113100 locator5 checkpoint/API and no training running; GPU7 is idle and is the immediate same-model rollback. The operational workspace is clean after commit c801974; local bulky artifacts are ignored, and 4.16 GB of obsolete data is recoverable from the Windows Recycle Bin. The current Quick Tunnel is ephemeral and must be revalidated after a PC or network restart."
+  "uncommitted_files": [],
+  "next_action": "Read NEW_CHAT_HANDOFF.md, 57BIT_RETAINED_STATE.md, deployment_artifacts/README.md, and .planning/.continue-here.md in full; acknowledge the blocking constraints; then follow the user's new request without training or replacing weights unless explicitly authorized.",
+  "context_notes": "There is no active phase plan. Production is healthy on server 249 GPU5 with the exact step113100 locator5 checkpoint/API and no training running; GPUs 4 and 6 are idle and GPU7 is the immediate same-model rollback. The new company batch is at C:/Users/liylei/Desktop/陶瓷水印_公司新样本20组_K3_K5_20260817 with ZIP SHA-256 b19b7b5ec37d204fb2d719cb79d42655b8079fd78bc91b414e528b208d5e5792. The current Quick Tunnel is https://implementation-contemporary-daughters-cassette.trycloudflare.com/decode and is ephemeral; both local SSH and cloudflared processes were running at handoff, but the address must be revalidated after any PC or network restart."
 }
