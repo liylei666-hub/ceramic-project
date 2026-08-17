@@ -77,6 +77,17 @@ Updated: 2026-08-17 CST
   178/180. All candidates were rejected, the blind10 set remained unused, and
   GPU7 production stayed on the exact step 113100/API hashes above. Evidence:
   `comparison_exports/correct57_replay_retrain_20260816/README.md`.
+- On 2026-08-17, a new company print batch was generated with the frozen
+  official TrustMark-Q encoder on idle GPU4: 20 new 17-digit identifiers, each
+  embedded once at K3 and once at K5 (40 PNGs total). The identifiers have no
+  overlap with either the original P01-P20 identifiers or the previous fresh
+  20-identifier audit set. All 40 saved 512x512 RGB PNGs passed the exact
+  step-113100 locator5 decode path (40/40, zero wrong valid identifiers), and
+  local transfer hashes and dimensions were rechecked. No training, model, API,
+  or production-service change occurred. User-facing folder and ZIP:
+  `C:\Users\liylei\Desktop\陶瓷水印_公司新样本20组_K3_K5_20260817` and the
+  same path with `.zip`; ZIP SHA-256 is
+  `b19b7b5ec37d204fb2d719cb79d42655b8079fd78bc91b414e528b208d5e5792`.
 
 Everything below is historical where inconsistent with this override,
 `57BIT_RETAINED_STATE.md`, or `deployment_artifacts/README.md`.
