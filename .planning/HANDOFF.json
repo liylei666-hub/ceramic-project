@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "timestamp": "2026-08-17T01:16:00.352Z",
+  "timestamp": "2026-08-17T01:35:21.285Z",
   "phase": "1",
   "phase_name": "Preserve the Accepted Operational Baseline",
   "phase_dir": ".planning",
@@ -32,6 +32,12 @@
       "name": "Clarify camera framing guidance",
       "status": "done",
       "progress": "Capture and system-camera hints now say the logo need not fill the frame and should remain complete, clear, and stable."
+    },
+    {
+      "id": 7,
+      "name": "Clean and version the operational workspace",
+      "status": "done",
+      "progress": "Moved 4.16 GB of obsolete checkpoints, rejected experiment artifacts, caches, and staging copies to the Windows Recycle Bin; retained the exact step113100 local checkpoint, current/rollback deployment source, critical reports, and tunnel runtime."
     }
   ],
   "remaining_tasks": [
@@ -93,10 +99,8 @@
     }
   ],
   "uncommitted_files": [
-    "comparison_exports/locator5_geometry_t_adapt_20260817/README.md",
-    "tmp/finetune_locator5_geometry_t.py",
     "C:/Users/liylei/Documents/陶瓷水印/apps/wechat-miniapp/pages/capture/index.wxml"
   ],
   "next_action": "Read NEW_CHAT_HANDOFF.md, 57BIT_RETAINED_STATE.md, deployment_artifacts/README.md, and .planning/.continue-here.md in full; acknowledge the blocking constraints; then follow the user's new request without training or replacing weights unless newly authorized.",
-  "context_notes": "There is no active phase plan. The project is paused with GPU7 production healthy on exact step113100 locator5 and no training running. The current Quick Tunnel is ephemeral and must be revalidated after a PC or network restart."
+  "context_notes": "There is no active phase plan. The project is paused with GPU7 production healthy on exact step113100 locator5 and no training running. The operational workspace is clean after commit c801974; local bulky artifacts are ignored, and 4.16 GB of obsolete data is recoverable from the Windows Recycle Bin. The current Quick Tunnel is ephemeral and must be revalidated after a PC or network restart."
 }
