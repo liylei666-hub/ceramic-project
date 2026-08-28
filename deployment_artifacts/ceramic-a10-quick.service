@@ -1,0 +1,16 @@
+[Unit]
+Description=Cloudflare Quick Tunnel for ceramic A10 decoder
+After=network-online.target ceramic-a10-decoder.service
+Wants=network-online.target
+Requires=ceramic-a10-decoder.service
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/cloudflared tunnel --no-autoupdate --url http://127.0.0.1:28765
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

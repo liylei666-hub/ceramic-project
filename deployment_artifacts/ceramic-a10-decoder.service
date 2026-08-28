@@ -1,0 +1,30 @@
+[Unit]
+Description=Ceramic 57-bit decoder on A10
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/ceramic-watermark
+Environment=CUDA_VISIBLE_DEVICES=0
+Environment=PYTHONPATH=/opt/ceramic-watermark/vendor
+Environment=CERAMIC_ROOT=/opt/ceramic-watermark/runtime_root
+Environment=CERAMIC_CHECKPOINT=/opt/ceramic-watermark/models/checkpoint_decoder_57bit_real18_legacy_pilot3_step600.pt
+Environment=CERAMIC_CHECKPOINT_SHA256=834d33d4666921f1ae6416d5c3a9d08a7ac60dc9dc21f4ce907caa5923e1d6ef
+Environment=CERAMIC_DEVICE=cuda:0
+Environment=CERAMIC_REQUIRE_API_TOKEN=1
+Environment=CERAMIC_REQUIRE_IMAGE_SHA256=1
+Environment=CERAMIC_MAX_UPLOAD_BYTES=52428800
+Environment=CERAMIC_MAX_IMAGE_PIXELS=50000000
+Environment=CREDENTIALS_DIRECTORY=/opt/ceramic-watermark/credentials
+ExecStart=/opt/ceramic-watermark/venv/bin/python -m uvicorn decoder_api.app:app --host 127.0.0.1 --port 28765 --workers 1 --log-level info
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+ReadWritePaths=/opt/ceramic-watermark
+
+[Install]
+WantedBy=multi-user.target

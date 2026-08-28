@@ -44,7 +44,11 @@
 - Temporary access remains
   `Mini Program -> Cloudflare -> local PC -> SSH -> 249 GPU5 decoder`.
 - Canonical 249 GPU5 tunnel script SHA-256:
-  `24a998c3314b1d1ec543d89f66c443aabe6f281ab3940b09fbbc74d3a1948b9b`.
+  `eff181e4580800dcb128b487f62f31ebf8e9afdc1ee516930dfe3e8443248b37`.
+- SSH watchdog SHA-256:
+  `7f40b2d992edaefe8aa99107d30dddaf13f7ae5ceb12880e49d51dc3f7c34e99`.
+  It recovers the local forward after a transient client-network reset without
+  restarting cloudflared or changing the Quick Tunnel hostname.
 
 The older sections below document the parent deployment and prior fallback
 history; this override is authoritative where they differ.
@@ -182,7 +186,15 @@ The script performs all of the following before returning an address:
 2. creates or reuses the local Cloudflare Quick Tunnel;
 3. verifies `/healthz` reports step 113100, the exact checkpoint SHA-256, and
    the `3/12/36` locator5 perspective-plus-rotation policy;
-4. prints both `base_url` and the complete `decode_url`.
+4. starts one hidden SSH-only watchdog that checks the exact local health
+   contract every 10 seconds and recreates the SSH forward after failure;
+5. prints both `base_url` and the complete `decode_url`.
+
+The watchdog is `watch-local-249-gpu5-ssh-forward.ps1`. It may stop only an
+`ssh.exe` process that owns local port 18766. It does not stop or restart
+cloudflared, so a short Wi-Fi interruption can recover on the same public
+hostname. Recovery attempts use the existing SSH key and exponential backoff;
+runtime evidence is appended to `tmp/ssh-249-gpu5-watchdog.log`.
 
 For a newly created Quick Tunnel, the operator PC's upstream DNS can briefly
 cache `NXDOMAIN` even after Cloudflare's authoritative DNS has published the
@@ -201,6 +213,18 @@ Copy the returned `decode_url` into the cloud function's `DECODER_URL`. The
 protected token must remain in `DECODER_TOKEN`; never place it in Mini Program
 source. Do not change the Mini Program or cloud-function address automatically
 unless the user explicitly asks for that change.
+
+For automatic Quick Tunnel rotation, the launcher also publishes the verified
+state atomically to `tmp/current-gpu5-decode-url.json`. A cloud function can
+read the same JSON contract through a **fixed HTTPS configuration URL** and
+then forward to its current `decode_url`; see
+`cloud-function-endpoint-adapter.example.js` and
+`current-gpu5-decode-url.schema.json`. The fixed configuration URL must be
+hosted outside the Quick Tunnel, for example in CloudBase, on the company's
+HTTPS domain, or behind a Cloudflare Named Tunnel. Hosting the JSON on the
+rotating Quick Tunnel does not solve endpoint discovery. Configure the cloud
+function's `DECODER_CONFIG_URL` with that stable URL and keep `DECODER_TOKEN`
+server-side.
 
 The operator PC must stay powered on, awake, and connected to the network. If
 the PC sleeps, shuts down, changes networks, or either local process exits, the

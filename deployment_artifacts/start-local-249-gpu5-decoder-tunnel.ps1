@@ -17,6 +17,8 @@ $runtimeDirectory = Join-Path $projectRoot 'tmp'
 $expectedModel = 'trustmark-q-57bit-real18-step113100-locator5-perspective-rotation'
 $expectedCheckpointSha256 = '834d33d4666921f1ae6416d5c3a9d08a7ac60dc9dc21f4ce907caa5923e1d6ef'
 $logPrefix = 'cloudflared-249-gpu5'
+$watchdogPath = Join-Path $deploymentDirectory 'watch-local-249-gpu5-ssh-forward.ps1'
+$currentUrlPath = Join-Path $runtimeDirectory 'current-gpu5-decode-url.json'
 
 if (-not (Test-Path -LiteralPath $runtimeDirectory)) {
     New-Item -ItemType Directory -Path $runtimeDirectory | Out-Null
@@ -106,6 +108,46 @@ function Get-TunnelProcesses {
     )
 }
 
+function Get-WatchdogProcesses {
+    $watchdogName = Split-Path -Leaf $watchdogPath
+    return @(
+        Get-CimInstance Win32_Process |
+            Where-Object {
+                $_.Name -in @('powershell.exe', 'pwsh.exe') -and
+                $_.CommandLine -and
+                $_.CommandLine -like "*$watchdogName*" -and
+                $_.CommandLine -like "*-LocalForwardPort $LocalForwardPort*"
+            }
+    )
+}
+
+function Ensure-SshWatchdog {
+    if (-not (Test-Path -LiteralPath $watchdogPath -PathType Leaf)) {
+        throw "GPU5 SSH watchdog not found: $watchdogPath"
+    }
+    $watchdogs = @(Get-WatchdogProcesses)
+    if ($watchdogs.Count -gt 0) { return $watchdogs[0].ProcessId }
+
+    $watchdogStdout = Join-Path $runtimeDirectory 'ssh-249-gpu5-watchdog.stdout.log'
+    $watchdogStderr = Join-Path $runtimeDirectory 'ssh-249-gpu5-watchdog.stderr.log'
+    $watchdog = Start-Process -FilePath 'powershell.exe' -ArgumentList @(
+        '-NoProfile',
+        '-ExecutionPolicy', 'Bypass',
+        '-File', $watchdogPath,
+        '-ServerHost', $ServerHost,
+        '-ServerUser', $ServerUser,
+        '-ServerKeyPath', $ServerKeyPath,
+        '-ServerDecoderPort', $ServerDecoderPort,
+        '-LocalForwardPort', $LocalForwardPort
+    ) -WindowStyle Hidden -RedirectStandardOutput $watchdogStdout `
+        -RedirectStandardError $watchdogStderr -PassThru
+    Start-Sleep -Milliseconds 500
+    if ($watchdog.HasExited) {
+        throw 'GPU5 SSH watchdog exited immediately after launch.'
+    }
+    return $watchdog.Id
+}
+
 function Get-LoggedUrls {
     $seen = @{}
     foreach ($log in @(
@@ -115,6 +157,7 @@ function Get-LoggedUrls {
             Select-Object -First 20
     )) {
         $content = Get-Content -LiteralPath $log.FullName -Raw -ErrorAction SilentlyContinue
+        if ([string]::IsNullOrWhiteSpace($content)) { continue }
         foreach ($match in [regex]::Matches($content, 'https://[a-zA-Z0-9-]+\.trycloudflare\.com')) {
             if (-not $seen.ContainsKey($match.Value)) {
                 $seen[$match.Value] = $true
@@ -122,6 +165,27 @@ function Get-LoggedUrls {
             }
         }
     }
+}
+
+function Save-CurrentDecodeUrl {
+    param(
+        [Parameter(Mandatory = $true)][string]$BaseUrl,
+        [Parameter(Mandatory = $true)]$Health
+    )
+
+    # Write through a temporary file so readers never observe a partial URL.
+    $state = [pscustomobject]@{
+        updated_at = (Get-Date).ToUniversalTime().ToString('o')
+        base_url = $BaseUrl
+        decode_url = "$BaseUrl/decode"
+        health_url = "$BaseUrl/healthz"
+        model = $Health.model
+        checkpoint_sha256 = $Health.checkpoint_sha256
+        device = $Health.device
+    } | ConvertTo-Json -Compress
+    $temporaryPath = "$currentUrlPath.tmp"
+    Set-Content -LiteralPath $temporaryPath -Value $state -Encoding UTF8 -NoNewline
+    Move-Item -LiteralPath $temporaryPath -Destination $currentUrlPath -Force
 }
 
 $localBaseUrl = "http://127.0.0.1:$LocalForwardPort"
@@ -162,6 +226,8 @@ else {
     if (-not $localHealth) { throw 'GPU5 SSH forwarding health check timed out.' }
 }
 
+$watchdogProcessId = Ensure-SshWatchdog
+
 $tunnelProcesses = @(Get-TunnelProcesses)
 if ($ForceNewTunnel) {
     foreach ($process in $tunnelProcesses) {
@@ -174,6 +240,7 @@ elseif ($tunnelProcesses.Count -gt 0) {
     foreach ($url in Get-LoggedUrls) {
         $health = Get-Health -BaseUrl $url
         if ($health) {
+            Save-CurrentDecodeUrl -BaseUrl $url -Health $health
             [pscustomobject]@{
                 topology = 'Mini Program -> Cloudflare -> local PC -> SSH -> 249 GPU5'
                 base_url = $url
@@ -182,6 +249,7 @@ elseif ($tunnelProcesses.Count -gt 0) {
                 checkpoint_sha256 = $health.checkpoint_sha256
                 device = $health.device
                 ssh_process_id = $sshProcessId
+                ssh_watchdog_process_id = $watchdogProcessId
                 cloudflared_process_id = $tunnelProcesses[0].ProcessId
                 reused_existing_tunnel = $true
             } | ConvertTo-Json -Compress
@@ -212,6 +280,7 @@ for ($attempt = 0; $attempt -lt 90; $attempt++) {
         throw "cloudflared exited before ready. $details"
     }
     $content = Get-Content -LiteralPath $stderr -Raw -ErrorAction SilentlyContinue
+    if ([string]::IsNullOrWhiteSpace($content)) { continue }
     $match = [regex]::Match($content, 'https://[a-zA-Z0-9-]+\.trycloudflare\.com')
     if ($match.Success) {
         $health = Get-Health -BaseUrl $match.Value
@@ -224,6 +293,8 @@ for ($attempt = 0; $attempt -lt 90; $attempt++) {
 }
 if (-not $verifiedUrl) { throw "GPU5 tunnel verification timed out. See $stderr" }
 
+Save-CurrentDecodeUrl -BaseUrl $verifiedUrl -Health $verifiedHealth
+
 [pscustomobject]@{
     topology = 'Mini Program -> Cloudflare -> local PC -> SSH -> 249 GPU5'
     base_url = $verifiedUrl
@@ -232,6 +303,7 @@ if (-not $verifiedUrl) { throw "GPU5 tunnel verification timed out. See $stderr"
     checkpoint_sha256 = $verifiedHealth.checkpoint_sha256
     device = $verifiedHealth.device
     ssh_process_id = $sshProcessId
+    ssh_watchdog_process_id = $watchdogProcessId
     cloudflared_process_id = $cloudflared.Id
     reused_existing_tunnel = $false
 } | ConvertTo-Json -Compress

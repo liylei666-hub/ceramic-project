@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Current GPU5 decoder endpoint",
+  "type": "object",
+  "required": ["updated_at", "decode_url", "health_url", "model", "checkpoint_sha256", "device"],
+  "properties": {
+    "updated_at": { "type": "string", "format": "date-time" },
+    "base_url": { "type": "string", "format": "uri" },
+    "decode_url": { "type": "string", "format": "uri" },
+    "health_url": { "type": "string", "format": "uri" },
+    "model": { "type": "string" },
+    "checkpoint_sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "device": { "const": "cuda:0" }
+  },
+  "additionalProperties": false
+}
