@@ -4,6 +4,11 @@ Updated: 2026-08-17 CST
 
 ## Current operational override (authoritative, 2026-08-17)
 
+- Server-level GPU constraint: GPU6 is faulty and must not be allocated to any
+  future experiment. Treat GPU6 as unavailable until a separate hardware/
+  driver-recovery authorization is given. Do not infer availability from
+  `nvidia-smi`; new CUDA initialization fails on GPU0-4 and GPU7 as well while
+  GPU5 production remains healthy.
 - The Mini Program decoder runs on server 249 GPU5 at `127.0.0.1:28765` from
   `/data0/liyanlei/ceramic_watermark/services/decoder_gpu5_real18_locator5_rotation_20260817`.
 - Step 113100 is the current best and only checkpoint considered for operation.
@@ -37,7 +42,12 @@ Updated: 2026-08-17 CST
 - The ECS retains step 113100 with the older 64-candidate API as a separate
   historical deployment, but it is not the current Mini Program route.
 - Canonical 249 GPU5 temporary tunnel script SHA-256:
-  `24a998c3314b1d1ec543d89f66c443aabe6f281ab3940b09fbbc74d3a1948b9b`.
+  `eff181e4580800dcb128b487f62f31ebf8e9afdc1ee516930dfe3e8443248b37`.
+- The launcher now starts an SSH-only watchdog from
+  `deployment_artifacts/watch-local-249-gpu5-ssh-forward.ps1` (SHA-256
+  `7f40b2d992edaefe8aa99107d30dddaf13f7ae5ceb12880e49d51dc3f7c34e99`).
+  It restores the local `18766 -> 249:28765` forward after a transient Wi-Fi
+  or transport reset without restarting cloudflared or changing the hostname.
 - Temporary access uses
   `Mini Program -> Cloudflare -> local PC -> SSH -> 249 GPU5 decoder`.
 - A 2026-08-16 independent GPU6 evaluation of six failed user samples did not
