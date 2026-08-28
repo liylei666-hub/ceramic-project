@@ -20,6 +20,16 @@
 *.tar
 *.log
 *.env
+*.pem
+*.key
+*.ppk
+*.p12
+*.jks
+node_modules/
+.venv/
+venv/
+credentials/
+secrets/
+*.secret
 __pycache__/
 *.py[cod]
-

@@ -1,0 +1,12 @@
+{
+  "name": "decode-ceramic",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.js",
+  "dependencies": {
+    "axios": "^1.11.0",
+    "form-data": "^4.0.4",
+    "ws": "^8.18.3",
+    "wx-server-sdk": "4.0.2"
+  }
+}
