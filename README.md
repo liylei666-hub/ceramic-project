@@ -1,61 +1,34 @@
-# 1024x1024 Natural-Image 512-bit Watermark PoC
+# 陶瓷 57-bit 水印项目
 
-独立实验项目，部署在 249 服务器：
+面向真实陶瓷生产和手机拍摄流程的 57-bit 业务标识水印系统。
 
-`/data0/liyanlei/natural_image_512bit_watermark_poc`
+## 当前运行基线
 
-旧的陶瓷水印项目未修改。
+- 解码模型：`trustmark-q-57bit-real18-step113100-locator5-perspective-rotation`
+- checkpoint：decoder-only 实陶适配，step 113100
+- checkpoint SHA-256：`834d33d4666921f1ae6416d5c3a9d08a7ac60dc9dc21f4ce907caa5923e1d6ef`
+- 输入：微信小程序裁切后的 512×512 PNG
+- 业务载荷：57-bit，包含 BCH-5 纠错、CRC-4 校验和业务标识解析
 
-## 初步方案
+## 目录
 
-- ChunkySeal：官方 VideoSeal 仓库中的 1024-bit 图像水印模型。
-- SyncSeal：官方 WMAR 仓库中的几何同步模型，用于旋转和裁剪后的反变换。
-- 本轮把 512-bit 有效载荷简单重复一次，形成 1024-bit 物理消息；这只是基线，不是正式 BCH/LDPC 编码。
-- 实验固定使用 249 的物理 GPU 7（RTX 3090）。
+- `deployment_artifacts/`：解码 API、249 GPU5 部署、Cloudflare/SSH 隧道及 watchdog
+- `cloudfunctions/`：CloudBase 解码、配置读取和配置更新云函数
+- `57BIT_RETAINED_STATE.md`：当前模型、接口和验收状态
+- `NEW_CHAT_HANDOFF.md`：运行交接信息
+- `.planning/`：项目规划、约束和阶段状态
+- `comparison_exports/`：已提交的实验摘要和验证报告
 
-## 输入和质量
+## 生产链路
 
-输入：`videoseal/assets/imgs/1.jpg` 调整为 1024x1024 RGB 图像 `assets/natural_1024.png`。
+微信小程序 → CloudBase → HTTPS 临时入口 → 249 GPU5 回环解码服务。
 
-嵌入输出：
+解码器只绑定回环地址，公网访问通过受保护的 HTTPS 入口转发。API token、SSH 私钥、模型权重、日志和临时运行文件均不纳入 Git。
 
-| 方法 | PSNR (dB) | SSIM |
-|---|---:|---:|
-| ChunkySeal | 47.063 | 0.99446 |
-| ChunkySeal + SyncSeal | 44.841 | 0.99115 |
+## 重要约束
 
-组合输出满足当前的 `PSNR > 40 dB`、`SSIM > 0.98` 要求。
+- 当前 step 113100 是唯一接受的运行基线，未经明确授权不得替换或重新训练。
+- 57-bit 业务协议与旧 40-bit 项目保持隔离。
+- 生产端点和小程序配置不得在未授权情况下变更。
 
-## 初测恢复结果
-
-结果文件：`outputs/chunkyseal_syncseal_initial/result.json`。
-
-| 攻击 | 直接解码 512-bit | SyncSeal 反变换后 512-bit | 整包 |
-|---|---:|---:|---|
-| Identity | 100.0% | 100.0% | 通过 |
-| 中心裁剪 50% | 99.805% | 99.219% | 未通过（4 bit） |
-| 中心裁剪 70% | 100.0% | 100.0% | 通过 |
-| 中心裁剪 90% | 100.0% | 100.0% | 通过 |
-| 旋转 10° | 99.805% | 100.0% | 通过 |
-| 旋转 30° | 48.828% | 100.0% | 通过 |
-| 旋转 45° | 48.828% | 100.0% | 通过 |
-| 旋转 90° | 100.0% | 100.0% | 通过 |
-| 旋转 180° | 48.828% | 100.0% | 通过 |
-| JPEG QF70 | 99.805% | 99.805% | 未通过（1 bit） |
-
-说明：旋转的“直接解码”不具备几何不变性，SyncSeal 反变换后恢复；裁剪和 JPEG 是当前基线的主要误码来源。`physical_bit_accuracy` 是 1024-bit 物理消息指标，`payload_bit_accuracy` 是重复合并后的 512-bit 有效载荷指标。
-
-## 运行
-
-```bash
-cd /data0/liyanlei/natural_image_512bit_watermark_poc
-CUDA_VISIBLE_DEVICES=7 env/bin/python src/chunky_combo_eval.py
-```
-
-脚本使用 mmap 权重加载，避免官方 13GB checkpoint 在 CPU 上完整解包导致 OOM。
-
-## 下一步
-
-1. 用 BCH/LDPC 或交织 + CRC 替换简单重复码，并在多张自然图像、多随机 payload 上统计误码率和整包成功率。
-2. 对 JPEG QF70 增强训练/微调，目标是纠正本轮 1 bit 残余错误。
-3. 明确中心裁剪的评价口径：本实验为“保留中心区域后 resize 回 1024”，不是任意位置裁剪。
+部署与验证命令请参阅 [`deployment_artifacts/README.md`](deployment_artifacts/README.md)。
