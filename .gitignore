@@ -33,3 +33,7 @@ secrets/
 *.secret
 __pycache__/
 *.py[cod]
+
+# The accepted production checkpoint is versioned through Git LFS.
+!models/
+!models/*.pt
